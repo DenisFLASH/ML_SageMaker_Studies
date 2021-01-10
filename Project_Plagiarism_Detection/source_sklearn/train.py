@@ -9,7 +9,7 @@ import pandas as pd
 # Import joblib package directly
 import joblib
 
-## TODO: Import any additional libraries you need to define a model
+from sklearn.neighbors import KNeighborsClassifier
 
 
 # Provided model load function
@@ -26,7 +26,6 @@ def model_fn(model_dir):
     return model
 
 
-## TODO: Complete the main code
 if __name__ == '__main__':
     
     # All of the model parameters and training parameters are sent as arguments
@@ -41,10 +40,12 @@ if __name__ == '__main__':
     parser.add_argument('--model-dir', type=str, default=os.environ['SM_MODEL_DIR'])
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
     
-    ## TODO: Add any additional arguments that you will need to pass into your model
+    parser.add_argument('--n_neighbors', type=int, default=5)
+    parser.add_argument('--knn_weights_type', type=str, default="uniform")
     
     # args holds all passed-in arguments
     args = parser.parse_args()
+    print(f"args: {args}")
 
     # Read in csv training file
     training_dir = args.data_dir
@@ -53,16 +54,17 @@ if __name__ == '__main__':
     # Labels are in the first column
     train_y = train_data.iloc[:,0]
     train_x = train_data.iloc[:,1:]
-    
+    print(f"train_x: {train_x}")
+    print(f"train_y: {train_y}")
     
     ## --- Your code here --- ##
     
 
-    ## TODO: Define a model 
-    model = None
-    
-    
-    ## TODO: Train the model
+    model = KNeighborsClassifier(n_neighbors=args.n_neighbors,
+                                 weights=args.knn_weights_type)
+    print(f"model: {model}")
+
+    model.fit(train_x, train_y)
     
     
     
